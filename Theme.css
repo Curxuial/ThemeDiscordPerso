@@ -1,7 +1,7 @@
 /**
  * @name Janis
  * @author uxa
- * @version 2.1.0-opti (v50)
+ * @version 2.1.1-opti (v51)
  * @description Thème Vencord avec panneaux transparents et fond d'écran intégré
  */
 
@@ -168,7 +168,6 @@ body::before {
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
-    will-change: transform;
     transform: translateZ(0);
     contain: strict;
 }
@@ -333,10 +332,7 @@ html body [class*="highlighted"] {
 
 
 /* ================= MENU PARAMÈTRES : FOND NOIR (SANS FLOU) =================
-   Floute uniquement ce qu'il y a derrière la fenêtre des paramètres.
-   Réglages :
-   - blur(10px)           : plus grand = plus flou mais plus lourd (ex : 16px)
-   - rgba(14,14,14,0.5)   : le 0.5 est l'assombrissement (0.3 = plus clair, 0.8 = plus sombre)
+   Fond noir opaque, aucun flou (backdrop-filter désactivé pour les performances).
 */
 
 /* Calques parents : on retire ce qui bloque le flou, et l'animation d'ouverture
@@ -350,7 +346,7 @@ html body [class*="layerContainer"] > [class*="layer_"] [class*="outerContainer_
     transition: none !important;
 }
 
-/* La fenêtre des paramètres : verre sombre flouté */
+/* La fenêtre des paramètres : fond noir opaque */
 html body [class*="layerContainer"] [class*="outerContainer_"] > [class*="modal_"] {
     background-color: rgb(0, 0, 0) !important;
     backdrop-filter: none !important;
@@ -1057,7 +1053,7 @@ html body #app-mount [class*="panels_"] *::after {
    Ne touche pas aux deux lignes WALLPAPER-START et WALLPAPER-END.
 */
 /* WALLPAPER-START */
-:root { --wallpaper: url("https://i.imgur.com/HPNd33X.png"); }
+:root { --wallpaper: url("https://i.imgur.com/ePC3llL.png"); }
 /* WALLPAPER-END */
 
 
@@ -1114,8 +1110,5 @@ html body [class*="layerContainer"] [id^="popout_"]:not(:has([role="menu"])):not
     --tooltip-color: var(--hover-card-bg) !important;
 }
 
-html body [class*="layerContainer"] [id^="popout_"]:not(:has([role="menu"])):not(:has([class*="userPopout"])) *:not(img):not(svg):not(canvas):not(foreignObject) {
-    --background-primary: var(--hover-card-bg) !important;
-    --background-secondary: var(--hover-card-bg) !important;
-}
+/* OPTI v51: règle sur tous les descendants des popouts supprimée (les variables CSS s'héritent déjà depuis le conteneur). */
 /* ================= FIN SURVOL VERRE ================= */
