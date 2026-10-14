@@ -1,0 +1,1121 @@
+/**
+ * @name Janis
+ * @author uxa
+ * @version 2.1.0-opti (v50)
+ * @description Thème Vencord avec panneaux transparents et fond d'écran intégré
+ */
+
+
+:root {
+    /* APP BACKGROUND COLORS */
+    --app-background: hsla(0,0%,0%,0.10);
+    --app-foreground: hsla(0,0%,7%,0.10);
+
+    /* APP CARD SETTINGS */
+    --app-card-radius: 8px;
+    --app-card-margin: 8px;
+    --app-card-top-margin: 4px;
+    --app-card-border-color: transparent;
+
+    /* APP BAR SETTINGS (BLACK BAR AT THE BOTTOM) */
+    --app-bar-size: 80px;
+
+    /* HEADER BAR SETTINGS */
+    --header-bar-height: 56px;
+    --header-bar-color: hsla(0,0%,13%,0.10);
+
+    /* ACCENT HSL AND TEXT COLOR SETTINGS */
+    --accent-hue: 141;
+    --accent-saturation: 72.9%;
+    --accent-lightness: 42%;
+    --accent-text-color: hsl(0,0%,6%);
+
+    /* ALERT HSL AND TEXT COLOR SETTINGS*/
+    --alert-hue: 0;
+    --alert-saturation: 85%;
+    --alert-lightness: 61%;
+    --alert-text-color: hsl(0,0%,0%);
+
+    /* LIST & MENU ITEM SETTINGS */
+    --background-tinted-hover: hsla(0,0%,100%,0.07);
+    --background-tinted-active: hsla(0,0%,100%,0.11);
+    --background-tinted-highlight: hsla(0,0%,100%,0.17);
+    --background-tinted-dark: hsla(0,0%,0%,0.10);
+
+    --menu-text-color: hsl(0,0%,85%);
+    --menu-item-radius: 6px;
+
+    /* CARD SETTINGS - DIFFERENT FROM APP CARD SETTINGS */
+    --card-color: hsla(0,0%,10%,0.10);
+	--card-color-hover: hsla(0,0%,14%,0.16);
+    --card-color-active: hsla(0,0%,22%,0.22);
+    --card-radius: 6px;
+    --card-border-color: hsla(0,0%,80%,0.16);
+
+    /* BUTTON SETTINGS */
+    --button-height: 36px;
+    --button-padding: 0 18px;
+
+    /* POPOUT AND MODAL SETTINGS */
+    --popout-color: hsla(0,0%,16%,0.22);
+    --popout-color-alt: hsla(0,0%,11%,0.18);
+	--popout-radius: 6px;
+	--popout-radius-big: 10px;
+
+    /* INPUT SETTINGS */
+    --input-height: 36px;
+    --input-padding: 0 12px;
+    --input-color: hsla(0,0%,100%,0.09);
+    --input-radius: 4px;
+    --input-border-color: hsl(0,0%,33%);
+    --input-text-color: hsl(0,0%,96%);
+    --input-placeholder-color: hsl(0,0%,71%);
+
+    /* MAIN CHAT BOX SETTINGS */
+    --main-textarea-min-height: 48px;
+    --main-textarea-color: hsla(0,0%,14%,0.14);
+    --main-textarea-border-color: hsla(0,0%,80%,0.14);
+    --main-textarea-text-color: hsl(0,0%,60%);
+    --main-textarea-placeholder-color: hsl(0,0%,54%);
+    --main-textarea-typing-color: hsla(0,0%,7%,0.9);
+
+    /* MESSAGE SETTINGS */
+    --message-color-hover: hsla(0,0%,9%,0.12);
+
+    /* SLIDER SETTINGS */
+    --slider-color: hsl(0,0%,70%);
+	--slider-background: hsla(0,0%,26%,0.30);
+
+    /* SCROLLBAR SETTINGS */
+    --scrollbar-width: 12px;
+    --scrollbar-color: hsl(0,0%,35%);
+    --scrollbar-hover-color: hsl(0,0%,49%);
+    --scrollbar-active-color: hsl(0,0%,58%);
+}
+
+
+/* ================= RÉGLAGES (tout au même endroit) =================
+   --main-tint      : voile sur serveurs / chat / membres / barre du haut
+                      0 = totalement transparent / 0.05 = léger voile / 0.10 = comme avant
+   --input-tint     : voile sur la zone "Message #chat" (0 = transparent, 0.22 = comme avant)
+   --sidebar-tint   : voile sur la colonne des salons (0 = transparent / 0.05 léger / 0.10 normal)
+   --panel-bg       : zone du bas à gauche + lecteur (rgb(0,0,0) = noir total ; rgba(0,0,0,0.85) = un peu transparent)
+   --popup-bg       : fond opaque des infobulles, cartes au survol et profils
+   --popup-bg-inner : fond des blocs internes des profils
+   --hover-card-bg  : fond de la pop-up au survol d'un serveur (rgb(0,0,0) = noir total)
+   --sidebar-text   : couleur du texte des salons (#ffffff = blanc)
+   --sidebar-text-outline : contour du texte ("none" = aucun ; ex : 0.5px 0 0 #000, -0.5px 0 0 #000, 0 0.5px 0 #000, 0 -0.5px 0 #000)
+   --sidebar-text-unread : couleur du nom d'un salon qui a un nouveau message (gris pour le repérer ; #5e5e5e = gris foncé, #4a4a4a = encore plus sombre, #7a7a7a = plus clair)
+   --mention-bg      : fond des @mentions (rgba(255,255,255,0.14) = gris clair discret ; transparent = aucun fond)
+   --member-banner-filter : éclat des bannières des membres (brightness(1.5) = plus vif, none = aucun)
+*/
+html {
+    --main-tint: 0;
+    --input-tint: 0;
+    --sidebar-tint: 0;
+    --panel-bg: rgb(0, 0, 0);
+    --popup-bg: rgb(18, 18, 18);
+    --popup-bg-inner: rgb(28, 28, 28);
+    --hover-card-bg: rgb(0, 0, 0);
+    --sidebar-text: #ffffff;
+    --sidebar-text-outline: none;
+    --sidebar-text-unread: #5e5e5e;
+    --mention-bg: rgba(255, 255, 255, 0.14);
+    --member-banner-filter: brightness(1.3) saturate(1.3);
+}
+
+/* ================= VENCORD WALLPAPER + TRANSPARENCY =================
+   The wallpaper is embedded in this file, so no second file is required.
+   Main UI surfaces use ~10% black opacity (about 90% transparent).
+*/
+:root,
+#app-mount {
+    --background-primary: rgba(0, 0, 0, 0.10) !important;
+    --background-secondary: rgba(0, 0, 0, 0.10) !important;
+    --background-secondary-alt: rgba(0, 0, 0, 0.12) !important;
+    --background-tertiary: rgba(0, 0, 0, 0.10) !important;
+    --background-floating: rgba(8, 8, 8, 0.22) !important;
+    --background-modifier-hover: rgba(255, 255, 255, 0.07) !important;
+    --background-modifier-active: rgba(255, 255, 255, 0.11) !important;
+    --background-modifier-selected: rgba(255, 255, 255, 0.13) !important;
+    --background-modifier-accent: rgba(255, 255, 255, 0.10) !important;
+    --background-base-lowest: rgba(0, 0, 0, 0.08) !important;
+    --background-base-lower: rgba(0, 0, 0, 0.09) !important;
+    --background-base-low: rgba(0, 0, 0, 0.10) !important;
+    --background-base-primary: rgba(0, 0, 0, 0.10) !important;
+    --background-base-secondary: rgba(0, 0, 0, 0.12) !important;
+    --background-base-tertiary: rgba(0, 0, 0, 0.14) !important;
+    --background-surface-high: rgba(0, 0, 0, 0.16) !important;
+    --background-surface-higher: rgba(0, 0, 0, 0.19) !important;
+    --background-surface-highest: rgba(0, 0, 0, 0.22) !important;
+    --bg-overlay-1: rgba(0, 0, 0, 0.10) !important;
+    --bg-overlay-2: rgba(0, 0, 0, 0.13) !important;
+    --bg-overlay-3: rgba(0, 0, 0, 0.16) !important;
+}
+
+html,
+body {
+    background: transparent !important;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: var(--wallpaper);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    will-change: transform;
+    transform: translateZ(0);
+    contain: strict;
+}
+
+#app-mount {
+    position: relative;
+    z-index: 1;
+    background: transparent !important;
+}
+
+/* Transparent app layers and the main columns, including recent Discord class names. */
+#app-mount,
+[class*="appMount_"],
+[class*="app_"],
+[class*="bg_"],
+[class*="layers_"],
+[class*="layer_"],
+[class*="base_"],
+[class*="content_"],
+[class*="sidebar_"],
+[class*="sidebarList_"],
+[class*="guilds_"],
+[class*="chat_"],
+[class*="chatContent_"],
+[class*="messagesWrapper_"],
+[class*="membersWrap_"],
+[class*="members_"],
+[class*="panels_"],
+[class*="title_"],
+[class*="header_"],
+[class*="channelTextArea_"],
+[class*="form_"],
+[class*="searchBar_"] {
+    background-color: rgba(0, 0, 0, var(--main-tint)) !important;
+}
+
+/* The wallpaper itself must remain visible behind the interface. */
+#app-mount,
+[class*="appMount_"],
+[class*="bg_"],
+[class*="layers_"],
+[class*="layer_"] {
+    background-image: none !important;
+}
+
+/* Keep hover/selected rows readable without hiding the wallpaper. */
+/* OPTI: avant, ces 2 variables étaient redéclarées sur des milliers d'éléments (tous les
+   container_ / scroller_ / message_). Maintenant : une seule fois sur #app-mount (héritage),
+   et la règle par élément ne reste que dans les pop-ups/modales (petit sous-arbre). */
+#app-mount {
+    --background-primary: rgba(0, 0, 0, var(--main-tint)) !important;
+    --background-secondary: rgba(0, 0, 0, var(--main-tint)) !important;
+}
+html body [class*="layerContainer"] :is(
+    [class*="messageListItem_"],
+    [class*="message_"],
+    [class*="container_"],
+    [class*="scroller_"]
+) {
+    --background-primary: rgba(0, 0, 0, var(--main-tint)) !important;
+    --background-secondary: rgba(0, 0, 0, var(--main-tint)) !important;
+}
+
+/* Compose box and menus get a touch more tint so controls stay legible. */
+[class*="channelTextArea_"],
+[class*="scrollableContainer_"] {
+    background-color: rgba(8, 8, 8, var(--input-tint)) !important;
+}
+
+[class*="menu_"],
+[class*="menuPopout_"],
+[class*="popout_"],
+[class*="modal_"] {
+    background-color: rgba(8, 8, 8, 0.22) !important;
+}
+
+/* (règle de survol supprimée : elle repeignait de gros conteneurs à chaque mouvement de souris) */
+/* ================= END VENCORD CUSTOMIZATION ================= */
+
+
+/* ================= APPEL VOCAL + PARTAGE D'ÉCRAN : FOND TRANSPARENT =================
+   Rend transparents le fond noir de la zone d'appel, le fond gris des tuiles et les
+   fonds autour du flux vidéo / partage d'écran. La vidéo elle-même n'est pas touchée.
+   Pour désactiver : supprime tout ce bloc.
+*/
+html body #app-mount :is(
+    [class*="callContainer"],
+    [class*="minimum_"],
+    [class*="videoWrapper"],
+    [class*="streamPreview"],
+    [class*="streamContainer"],
+    [class*="streamBackground"],
+    [class*="screenShare"],
+    [class*="screen-share"],
+    [class*="noChat_"]
+),
+html body #app-mount [class*="callContainer_"] > [class*="root_"],
+html body #app-mount [class*="callContainer_"] [class*="flexCenter_"],
+html body #app-mount [class*="callContainer_"] [class*="tileWrapper_"],
+html body #app-mount [class*="callContainer_"] [class*="videoFrame_"] {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+}
+/* ================= FIN APPEL VOCAL + PARTAGE D'ÉCRAN ================= */
+
+
+/* ================= MENU CLIC DROIT : PLUS OPAQUE =================
+   Modifie ici l'opacité : 0.92 = quasi opaque, 1 = totalement opaque,
+   0.75 = un peu plus transparent.
+*/
+html body [role="menu"],
+html body [class*="menu_"][class*="styles_"],
+html body [class*="contextMenu"],
+html body [class*="subMenu"] {
+    --background-floating: rgba(18, 18, 18, 0.94) !important;
+    --background-primary: rgba(18, 18, 18, 0.94) !important;
+    --background-secondary: rgba(18, 18, 18, 0.94) !important;
+    background-color: rgba(18, 18, 18, 0.94) !important;
+    border: 1px solid rgba(255, 255, 255, 0.10) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55) !important;
+}
+
+/* Les éléments du menu restent lisibles au survol */
+html body [role="menu"] [role="menuitem"]:hover,
+html body [role="menu"] [class*="focused"] {
+    background-color: rgba(255, 255, 255, 0.10) !important;
+}
+/* ================= FIN MENU CLIC DROIT ================= */
+
+
+/* ================= MESSAGES : AUCUN FOND =================
+   Retire la bande sombre derrière le pseudo / l'heure et derrière chaque message
+   (y compris au survol, en réponse, ou quand on est mentionné).
+   Les blocs de code, embeds et images ne sont pas touchés.
+*/
+html body [class*="messageListItem_"],
+html body [class*="message_"],
+html body [class*="cozyMessage"],
+html body [class*="groupStart"],
+html body [class*="mentioned"],
+html body [class*="replying"],
+html body [class*="highlighted"] {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+}
+/* OPTI: ces variables étaient redéclarées sur CHAQUE message (copie de la table de variables
+   de Discord par élément = très lourd). Elles sont maintenant déclarées une seule fois ici
+   et héritées. Même rendu. */
+:root,
+#app-mount {
+    --background-message-hover: transparent !important;
+    --background-message-highlight: transparent !important;
+    --background-message-mentioned: transparent !important;
+    --background-message-mentioned-hover: transparent !important;
+    --background-message-automod: transparent !important;
+    --message-color-hover: transparent !important;
+}
+/* ================= FIN MESSAGES ================= */
+
+
+/* ================= MENU PARAMÈTRES : FOND NOIR (SANS FLOU) =================
+   Floute uniquement ce qu'il y a derrière la fenêtre des paramètres.
+   Réglages :
+   - blur(10px)           : plus grand = plus flou mais plus lourd (ex : 16px)
+   - rgba(14,14,14,0.5)   : le 0.5 est l'assombrissement (0.3 = plus clair, 0.8 = plus sombre)
+*/
+
+/* Calques parents : on retire ce qui bloque le flou, et l'animation d'ouverture
+   (la fenêtre s'affiche directement, sans recalculer le flou à chaque image) */
+html body [class*="layerContainer"] > [class*="layer_"],
+html body [class*="layerContainer"] > [class*="layer_"] [class*="outerContainer_"] {
+    opacity: 1 !important;
+    filter: none !important;
+    will-change: auto !important;
+    animation: none !important;
+    transition: none !important;
+}
+
+/* La fenêtre des paramètres : verre sombre flouté */
+html body [class*="layerContainer"] [class*="outerContainer_"] > [class*="modal_"] {
+    background-color: rgb(0, 0, 0) !important;
+    backdrop-filter: none !important;
+    animation: none !important;
+    transition: none !important;
+}
+/* ================= FIN MENU PARAMÈTRES ================= */
+
+
+/* ================= APPEL VOCAL : PAS D'ASSOMBRISSEMENT AU SURVOL =================
+   Quand la souris bouge dans un appel, Discord affiche des dégradés sombres
+   en haut et en bas (derrière l'en-tête et les boutons). On les supprime ici.
+   Les boutons, la vidéo et les tuiles ne sont pas touchés.
+   Pour désactiver : supprime tout ce bloc.
+*/
+html body #app-mount [class*="noChat_"] :is(
+    [class*="gradient"],
+    [class*="vignette"],
+    [class*="scrim"],
+    [class*="overlay"]
+),
+html body #app-mount [class*="noChat_"]::before,
+html body #app-mount [class*="noChat_"]::after,
+html body #app-mount [class*="callContainer_"]::before,
+html body #app-mount [class*="callContainer_"]::after,
+html body #app-mount [class*="callContainer_"] > [class*="root_"]::before,
+html body #app-mount [class*="callContainer_"] > [class*="root_"]::after {
+    background: none !important;
+    background-image: none !important;
+    box-shadow: none !important;
+}
+/* ================= FIN SURVOL APPEL ================= */
+
+
+/* ================= BANNIÈRES DES MEMBRES : BIEN VISIBLES =================
+   La bannière d'une ligne de membre est l'élément "container_" placé dans "nameplated_".
+   On retire ce qui l'atténue (transparence, fondu) et on la rend un peu plus vive.
+   Réglage : --member-banner-filter (en haut du fichier).
+   Pour désactiver : supprime tout ce bloc.
+*/
+html body #app-mount [class*="nameplated_"] > [class*="container_"] {
+    opacity: 1 !important;
+    mix-blend-mode: normal !important;
+    mask-image: none !important;
+    filter: var(--member-banner-filter) !important;
+}
+
+/* Enfants de la bannière (3 niveaux max) : opacité, fondu et masque retirés */
+html body #app-mount [class*="nameplated_"] > [class*="container_"] > *,
+html body #app-mount [class*="nameplated_"] > [class*="container_"] > * > *,
+html body #app-mount [class*="nameplated_"] > [class*="container_"] > * > * > * {
+    opacity: 1 !important;
+    mix-blend-mode: normal !important;
+    mask-image: none !important;
+}
+
+/* Le thème teinte en noir le contenu de chaque ligne : on l'enlève pour ne pas assombrir la bannière */
+html body #app-mount [class*="nameplated_"] [class*="memberInner_"],
+html body #app-mount [class*="nameplated_"] [class*="content_"] {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+/* ================= FIN BANNIÈRES DES MEMBRES ================= */
+
+
+/* ================= BANNIÈRE PANNEAU UTILISATEUR (CIBLÉ) =================
+   Vise uniquement l'élément de la bannière : container_...containerRtcOpened_...
+   Aucun sélecteur large -> pas de lag. Rien ne dépasse (clip-path).
+   Pour désactiver : supprime tout ce bloc.
+*/
+html body #app-mount [class*="containerRtcOpened_"] {
+    opacity: 1 !important;
+    mix-blend-mode: normal !important;
+    background-blend-mode: normal !important;
+    mask-image: none !important;
+    backdrop-filter: none !important;
+    clip-path: inset(0) !important;
+    /* Plus vive (décommente si tu veux) : */
+    /* filter: brightness(1.3) saturate(1.2) !important; */
+}
+
+/* Retire les dégradés / voiles sombres posés par-dessus la bannière */
+html body #app-mount [class*="containerRtcOpened_"]::before,
+html body #app-mount [class*="containerRtcOpened_"]::after {
+    background: none !important;
+    background-image: none !important;
+    opacity: 0 !important;
+}
+/* ================= FIN BANNIÈRE PANNEAU UTILISATEUR ================= */
+
+
+/* ================= COLONNE DES SALONS : TRANSPARENTE, AUCUN FOND SOMBRE =================
+   Réglage : --sidebar-tint (en haut du fichier).
+   Le surlignage du salon sélectionné / survolé est opaque (plus de verre).
+   Pour désactiver : supprime tout ce bloc.
+*/
+html body #app-mount :is([class*="sidebar_"], [class*="sidebarList"]) {
+    /* variables du thème qui peignent le voile */
+    --app-background: transparent !important;
+    --app-foreground: transparent !important;
+    --card-color: transparent !important;
+    --popout-color: transparent !important;
+    --popout-color-alt: transparent !important;
+    --background-modifier-hover: rgb(36, 36, 36) !important;
+    --background-modifier-active: rgb(42, 42, 42) !important;
+    --background-modifier-selected: rgb(48, 48, 48) !important;
+    --background-tinted-hover: rgb(36, 36, 36) !important;
+    --background-tinted-active: rgb(42, 42, 42) !important;
+    --background-tinted-highlight: rgb(48, 48, 48) !important;
+    --card-color-hover: rgb(36, 36, 36) !important;
+    --background-primary: transparent !important;
+    --background-secondary: transparent !important;
+    --background-secondary-alt: transparent !important;
+    --background-tertiary: transparent !important;
+    --background-base-lowest: transparent !important;
+    --background-base-lower: transparent !important;
+    --background-base-low: transparent !important;
+    --background-base-primary: transparent !important;
+    --background-base-secondary: transparent !important;
+    --background-base-tertiary: transparent !important;
+    --background-surface-high: transparent !important;
+    --background-surface-higher: transparent !important;
+    --background-surface-highest: transparent !important;
+    --bg-overlay-1: transparent !important;
+    --bg-overlay-2: transparent !important;
+    --bg-overlay-3: transparent !important;
+    --bg-overlay-app-frame: transparent !important;
+    --bg-overlay-chat: transparent !important;
+    --background-nested-floating: transparent !important;
+}
+
+html body #app-mount :is(
+    [class*="sidebarList"],
+    [class*="sidebarListRounded"],
+    [class*="sidebar_"] > [class*="content_"],
+    [class*="sidebar_"] [class*="scroller_"],
+    [class*="sidebar_"] [class*="scrollerContent"],
+    [class*="sidebar_"] [class*="list_"],
+    [class*="sidebar_"] [class*="header_"],
+    [class*="sidebar_"] [class*="bannerVisible"],
+    [class*="sidebar_"] [class*="animatedContainer"]
+) {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    backdrop-filter: none !important;
+}
+
+/* La colonne elle-même : seul endroit où le réglage --sidebar-tint s'applique */
+html body #app-mount [class*="sidebar_"] {
+    background: none !important;
+    background-color: rgba(0, 0, 0, var(--sidebar-tint)) !important;
+    background-image: none !important;
+    backdrop-filter: none !important;
+}
+
+/* Dégradés / voiles posés par-dessus la colonne */
+html body #app-mount :is([class*="sidebar_"], [class*="sidebarList"], [class*="sidebarListRounded"])::before,
+html body #app-mount :is([class*="sidebar_"], [class*="sidebarList"], [class*="sidebarListRounded"])::after {
+    background: none !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    opacity: 0 !important;
+}
+
+html body #app-mount [class*="sidebar_"] :is(
+    [class*="link"]:hover,
+    [class*="modeSelected"] [class*="link"],
+    [class*="wrapper_"]:hover > [class*="link"],
+    [class*="modeSelected"] > [class*="link"],
+    [data-list-item-id]:hover,
+    [data-list-item-id][class*="modeSelected"]
+) {
+    background-color: rgb(48, 48, 48) !important;
+    background-image: none !important;
+    opacity: 1 !important;
+    backdrop-filter: none !important;
+}
+/* ================= FIN COLONNE DES SALONS ================= */
+
+
+/* ================= INFOBULLES, CARTES AU SURVOL ET PROFILS : OPAQUES =================
+   Infobulles ("User Settings"...), carte qui s'affiche au survol d'un serveur,
+   et cartes de profil (popout + fenêtre) : fond plein, pas de flou, pas de fondu.
+   La bannière et la photo de profil ne sont pas touchées.
+   Réglage : --popup-bg / --popup-bg-inner (en haut du fichier).
+   Pour désactiver : supprime tout ce bloc.
+*/
+html body [class*="layerContainer"] {
+    --background-floating: var(--popup-bg);
+    --background-primary: var(--popup-bg);
+    --background-secondary: var(--popup-bg);
+    --background-secondary-alt: var(--popup-bg);
+    --background-tertiary: var(--popup-bg);
+    --background-base-lowest: var(--popup-bg);
+    --background-base-lower: var(--popup-bg);
+    --background-base-low: var(--popup-bg);
+    --background-base-primary: var(--popup-bg);
+    --background-base-secondary: var(--popup-bg);
+    --background-base-tertiary: var(--popup-bg);
+    --background-surface-high: var(--popup-bg);
+    --background-surface-higher: var(--popup-bg);
+    --background-surface-highest: var(--popup-bg);
+    --bg-overlay-1: var(--popup-bg);
+    --bg-overlay-2: var(--popup-bg);
+    --bg-overlay-3: var(--popup-bg);
+    --popout-color: var(--popup-bg);
+    --popout-color-alt: var(--popup-bg);
+    --card-color: var(--popup-bg-inner);
+    --profile-body-background-color: var(--popup-bg);
+    --profile-body-background-hover: var(--popup-bg-inner);
+}
+
+html body [class*="layerContainer"] [class*="tooltip"]:not([class*="Pointer"]) {
+    background-color: var(--popup-bg) !important;
+    background-image: none !important;
+    opacity: 1 !important;
+    border: 1px solid rgba(255, 255, 255, 0.10) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55) !important;
+}
+
+/* Éléments internes de la carte du serveur : pas de fond propre qui laisserait voir derrière */
+html body [class*="layerContainer"] [class*="tooltipContent"],
+html body [class*="layerContainer"] [class*="tooltip"] [class*="content_"] {
+    background-color: transparent !important;
+}
+
+/* La carte de profil elle-même */
+html body [class*="layerContainer"] :is(
+    [class*="userPopoutOuter"],
+    [class*="userPopoutInner"],
+    [class*="userProfileOuter"],
+    [class*="userProfileInner"],
+    [class*="userProfileModal"],
+    [class*="profilePopout"]
+) {
+    background-color: var(--popup-bg) !important;
+    background-image: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    mix-blend-mode: normal !important;
+}
+
+/* Corps de la carte (sous la bannière) et blocs internes : fond opaque */
+html body [class*="layerContainer"] :is([class*="userPopoutOuter"], [class*="userProfileOuter"], [class*="userProfileModal"])
+    :is([class*="body_"], [class*="overlay"], [class*="section_"], [class*="note_"], [class*="activityCard"], [class*="inner_"]) {
+    background-color: var(--popup-bg-inner) !important;
+    background-image: none !important;
+    opacity: 1 !important;
+    backdrop-filter: none !important;
+}
+
+/* Zone "Message @pseudo" en bas de la carte */
+html body [class*="layerContainer"] :is([class*="userPopoutOuter"], [class*="userProfileOuter"])
+    :is([class*="channelTextArea_"], [class*="scrollableContainer_"], [class*="textArea"]) {
+    background-color: rgb(40, 40, 40) !important;
+    opacity: 1 !important;
+}
+/* ================= FIN INFOBULLES / PROFILS ================= */
+
+
+/* ================= POP-UP AU SURVOL D'UN SERVEUR : NOIR TOTAL =================
+   Infobulle simple OU carte preview (Events / salons / Server Boosts).
+   La preview n'est PAS dans disabledPointerEvents et n'a PAS de listItem_
+   (listItem_ = barre des icônes). On cible popout_ + data-list-item-id.
+   Réglage : --hover-card-bg (en haut du fichier).
+*/
+html body [class*="layerContainer"] :is(
+    [class*="disabledPointerEvents"],
+    [id^="popout_"],
+    [class*="layer_"]:has([data-list-item-id]),
+    [class*="layer_"]:has([role="tooltip"]),
+    [class*="tooltip"]:not([class*="Pointer"])
+) {
+    --background-floating: var(--hover-card-bg) !important;
+    --background-primary: var(--hover-card-bg) !important;
+    --background-secondary: var(--hover-card-bg) !important;
+    --background-secondary-alt: var(--hover-card-bg) !important;
+    --background-tertiary: var(--hover-card-bg) !important;
+    --background-base-lowest: var(--hover-card-bg) !important;
+    --background-base-lower: var(--hover-card-bg) !important;
+    --background-base-low: var(--hover-card-bg) !important;
+    --background-base-primary: var(--hover-card-bg) !important;
+    --background-base-secondary: var(--hover-card-bg) !important;
+    --background-base-tertiary: var(--hover-card-bg) !important;
+    --background-surface-high: var(--hover-card-bg) !important;
+    --background-surface-higher: var(--hover-card-bg) !important;
+    --background-surface-highest: var(--hover-card-bg) !important;
+    --bg-overlay-1: var(--hover-card-bg) !important;
+    --bg-overlay-2: var(--hover-card-bg) !important;
+    --bg-overlay-3: var(--hover-card-bg) !important;
+    --popout-color: var(--hover-card-bg) !important;
+    --popout-color-alt: var(--hover-card-bg) !important;
+    --card-color: var(--hover-card-bg) !important;
+    --tooltip-color: var(--hover-card-bg) !important;
+    --main-tint: 1;
+    --background-modifier-hover: rgb(36, 36, 36) !important;
+    --background-modifier-selected: rgb(48, 48, 48) !important;
+}
+
+html body [class*="layerContainer"] :is(
+    [id^="popout_"],
+    [class*="layer_"]:has([data-list-item-id]),
+    [class*="tooltip"]:not([class*="Pointer"]),
+    [role="tooltip"]
+),
+html body [class*="layerContainer"] [id^="popout_"] :is(
+    [class*="container_"],
+    [class*="popout_"],
+    [class*="wrapper_"],
+    [class*="content_"],
+    [class*="scroller_"],
+    [class*="card"],
+    [class*="header_"]
+) {
+    background: var(--hover-card-bg) !important;
+    background-color: var(--hover-card-bg) !important;
+    background-image: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    mix-blend-mode: normal !important;
+}
+
+html body [class*="layerContainer"] [id^="popout_"] :is(
+    [class*="modeSelected"],
+    [class*="link"]:hover,
+    [class*="wrapper_"]:hover
+) {
+    background-color: rgb(48, 48, 48) !important;
+}
+/* ================= FIN POP-UP SURVOL SERVEUR ================= */
+
+
+/* ================= ZONE DU BAS À GAUCHE : FOND NOIR + RACCORD AVEC LE LECTEUR =================
+   Activité, Voice Connected, boutons, panneau utilisateur, lecteur de musique.
+   Réglage : --panel-bg (en haut du fichier).
+   Le box-shadow prolonge le noir du lecteur vers le haut (14px) et vers le bas (24px) pour
+   combler l'écart ; les coins arrondis et marges qui laissaient un trou sont supprimés.
+   Pour désactiver : supprime tout ce bloc.
+*/
+html body #app-mount [class*="panels_"] {
+    background-color: var(--panel-bg) !important;
+    background-image: none !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+html body #app-mount #vc-spotify-player,
+html body #app-mount [class*="vc-spotify-player"] {
+    background-color: var(--panel-bg) !important;
+    background-image: none !important;
+    box-shadow: 0 -14px 0 0 var(--panel-bg), 0 24px 0 0 var(--panel-bg) !important;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    margin-top: 0 !important;
+}
+/* ================= FIN ZONE DU BAS ================= */
+
+
+/* ================= COLONNE DES SALONS : COULEUR DU TEXTE =================
+   Texte et icônes de la liste des salons, avec un contour optionnel pour rester lisibles sur le fond d'écran.
+   Le nom du serveur reste blanc. La couleur ne change ni au survol ni à la sélection.
+   La zone du bas (fond noir) n'est pas touchée.
+   Réglages : --sidebar-text, --sidebar-text-outline (en haut du fichier).
+   Pour désactiver : supprime tout ce bloc.
+*/
+html body #app-mount [class*="sidebar_"] [class*="sidebarList"] [class*="scroller_"] {
+    color: var(--sidebar-text) !important;
+    text-shadow: var(--sidebar-text-outline);
+    --text-default: var(--sidebar-text);
+    --text-normal: var(--sidebar-text);
+    --text-muted: var(--sidebar-text);
+    --text-secondary: var(--sidebar-text);
+    --header-primary: var(--sidebar-text);
+    --header-secondary: var(--sidebar-text);
+    --channels-default: var(--sidebar-text);
+    --channel-icon: var(--sidebar-text);
+    --interactive-normal: var(--sidebar-text);
+    --interactive-hover: var(--sidebar-text);
+    --interactive-active: var(--sidebar-text);
+    --interactive-muted: var(--sidebar-text);
+    --interactive-icon-default: var(--sidebar-text);
+    --interactive-icon-hover: var(--sidebar-text);
+    --interactive-icon-active: var(--sidebar-text);
+    --text-strong: var(--sidebar-text);
+}
+/* ================= FIN COULEUR DU TEXTE ================= */
+
+
+/* ================= COULEUR FIXE : SURVOL, SÉLECTION, QUAND ON PARLE =================
+   Force la même couleur sur les noms (salons, membres en vocal, statut) quel que soit l'état :
+   survol, sélection, quelqu'un qui parle. Aucun :hover -> aucun coût.
+   Le nom du serveur (en haut) n'est pas touché.
+   Pour désactiver : supprime tout ce bloc.
+*/
+html body #app-mount [class*="sidebar_"] [class*="sidebarList"] [class*="scroller_"] :is(
+    [class*="name"],
+    [class*="channelName"],
+    [class*="mainContent"]
+) {
+    color: var(--sidebar-text) !important;
+    -webkit-text-fill-color: var(--sidebar-text) !important;
+}
+/* ================= FIN SURVOL / SÉLECTION ================= */
+
+
+/* ================= BARRES DE SÉPARATION : SUPPRIMÉES =================
+   Les deux traits verticaux entre la colonne des salons, le chat et la liste des membres.
+   (La couleur de bordure des cartes est aussi mise à "transparent" tout en haut du fichier.)
+   Pour les remettre : supprime ce bloc et remets --app-card-border-color à hsla(0,0%,70%,0.18).
+*/
+html body #app-mount :is([class*="page_"], [class*="sidebar_"], [class*="chat_"], [class*="membersWrap_"]) {
+    border-left: 0 !important;
+    border-right: 0 !important;
+    box-shadow: none !important;
+}
+/* ================= FIN BARRES ================= */
+
+
+/* ================= BARRE VERTICALE : BORDURES DU CADRE =================
+   Met à "transparent" les couleurs de bordure du cadre de l'interface de Discord.
+   Pour désactiver : supprime tout ce bloc.
+*/
+html body #app-mount {
+    --app-frame-border: transparent !important;
+    --app-border-frame: transparent !important;
+    --border-faint: transparent !important;
+}
+/* ================= FIN BARRE VERTICALE ================= */
+
+
+/* ================= BARRE DU HAUT : NOM DU SERVEUR + PHOTO MASQUÉS =================
+   Cache le petit bloc "photo + uxa the goat" en haut à droite.
+   Si le bloc est encore visible : fais clic droit sur la PHOTO > Inspecter,
+   copie la classe de l'élément parent qui contient la photo + le nom, et colle-la
+   à la place de la 2e règle.
+   Pour désactiver : supprime tout ce bloc.
+*/
+html body :is([class*="titleBar"], [class^="bar_"], [class*=" bar_"], [class*="trailing"], [class*="toolbar"])
+    :is(
+        [class*="lineClamp1__4bd52"][class*="text-sm/medium_cf4812"],
+        :has(> [class*="lineClamp1__4bd52"][class*="text-sm/medium_cf4812"])
+    ) {
+    display: none !important;
+}
+/* ================= FIN BARRE DU HAUT ================= */
+
+
+
+/* ================= APPEL EN PLEIN ÉCRAN : FOND D'ÉCRAN VISIBLE, SANS CADRE NOIR =================
+   En plein écran, Discord affiche l'appel au-dessus de tout (le fond d'écran de la page n'est plus
+   visible, d'où le noir). On remet donc le fond d'écran directement derrière l'élément en plein écran,
+   on le force à remplir tout l'écran, et on retire bordures, ombres et dégradés qui font le cadre noir
+   quand la souris bouge.
+   Pour désactiver : supprime tout ce bloc.
+*/
+:fullscreen,
+#app-mount:fullscreen,
+html body :fullscreen {
+    background-color: transparent !important;
+    background-image: var(--wallpaper) !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+}
+
+:fullscreen::backdrop {
+    background-color: transparent;
+    background-image: var(--wallpaper);
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+/* Cadre : bordures, contours et ombres des 3 premiers niveaux */
+:fullscreen > *,
+:fullscreen > * > *,
+:fullscreen > * > * > * {
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+}
+
+/* OPTI: retiré :not(svg *) (inutile, et coûteux : testé sur chaque élément même hors plein écran). */
+/* Dégradés sombres (haut / bas / bords) : retirés partout sauf sur les images, vidéos, icônes et boutons */
+:fullscreen :not(video):not(canvas):not(img):not(svg):not(button):not([role="button"]):not([class*="avatar"]),
+:fullscreen :not(video):not(canvas):not(img):not(svg):not(button):not([role="button"]):not([class*="avatar"])::before,
+:fullscreen :not(video):not(canvas):not(img):not(svg):not(button):not([role="button"]):not([class*="avatar"])::after {
+    background-image: none !important;
+}
+/* ================= FIN APPEL PLEIN ÉCRAN ================= */
+
+
+/* ================= BOUTONS CAMÉRA / PARTAGE D'ÉCRAN / ACTIVITÉS / SOUNDBOARD : NOIR SUR BLANC =================
+   Dans l'appel et dans le panneau en bas à gauche. Ciblés par leur étiquette (langue : anglais).
+   Pour désactiver : supprime tout ce bloc.
+*/
+html body #app-mount :is([class*="callContainer_"], [class*="panels_"])
+    :is(button, [role="button"]):is(
+        [aria-label*="camera" i],
+        [aria-label*="screen" i],
+        [aria-label*="activit" i],
+        [aria-label*="soundboard" i]
+    ):not([aria-label*="full" i]) {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: #000000 !important;
+    --interactive-normal: #000000;
+    --interactive-hover: #000000;
+    --interactive-active: #000000;
+    --icon-default: #000000;
+}
+
+html body #app-mount :is([class*="callContainer_"], [class*="panels_"])
+    :is(button, [role="button"]):is(
+        [aria-label*="camera" i],
+        [aria-label*="screen" i],
+        [aria-label*="activit" i],
+        [aria-label*="soundboard" i]
+    ):not([aria-label*="full" i]) :is(svg, svg *) {
+    color: #000000 !important;
+    fill: #000000 !important;
+}
+
+html body #app-mount :is([class*="callContainer_"], [class*="panels_"])
+    :is(button, [role="button"]):is(
+        [aria-label*="camera" i],
+        [aria-label*="screen" i],
+        [aria-label*="activit" i],
+        [aria-label*="soundboard" i]
+    ):not([aria-label*="full" i]):hover {
+    background-color: #e4e4e4 !important;
+}
+/* ================= FIN BOUTONS NOIR SUR BLANC ================= */
+
+
+/* ================= SALONS AVEC NOUVEAU MESSAGE : TEXTE UN PEU MOINS BLANC =================
+   Un salon non lu s'affiche avec la couleur --sidebar-text-unread (en haut du fichier),
+   les autres restent à --sidebar-text. Le salon sélectionné n'est pas touché.
+   Un salon est repéré comme "non lu" de 3 façons (au cas où Discord change ses noms de classes).
+   Pour désactiver : supprime tout ce bloc.
+*/
+html body #app-mount [class*="sidebar_"] [class*="sidebarList"] [class*="scroller_"] [class*="modeUnread"] :is([class*="name"], [class*="channelName"], [class*="mainContent"]),
+html body #app-mount [class*="sidebar_"] [class*="sidebarList"] [class*="scroller_"] :is([class*="name"], [class*="channelName"], [class*="mainContent"])[class*="modeUnread"],
+html body #app-mount [class*="sidebar_"] [class*="sidebarList"] [class*="scroller_"] [class*="unread_"] ~ * :is([class*="name"], [class*="channelName"], [class*="mainContent"]) {
+    color: var(--sidebar-text-unread) !important;
+    -webkit-text-fill-color: var(--sidebar-text-unread) !important;
+}
+/* ================= FIN SALONS NON LUS ================= */
+
+
+/* ================= MENU QUAND ON TAPE @ (ET # / : /) : OPAQUE =================
+   La liste de suggestions au-dessus de la zone de message : fond plein, pas de transparence.
+   Réglage : --popup-bg (en haut du fichier).
+   Pour désactiver : supprime tout ce bloc.
+*/
+html body #app-mount :is([class*="autocomplete_"], [class*="autocompleteInner_"]) {
+    --background-floating: var(--popup-bg);
+    --background-primary: var(--popup-bg);
+    --background-secondary: var(--popup-bg);
+    --background-secondary-alt: var(--popup-bg);
+    --background-base-lower: var(--popup-bg);
+    --background-base-low: var(--popup-bg);
+    --background-surface-high: var(--popup-bg);
+    background-color: var(--popup-bg) !important;
+    background-image: none !important;
+    opacity: 1 !important;
+    backdrop-filter: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.10) !important;
+    border-radius: 8px !important;
+}
+/* ================= FIN MENU @ ================= */
+
+/* ================= INFOBULLE / CARTE D'UN SERVEUR : PLUS D'EFFET DE FONDU =================
+   Quand tu survoles un serveur, l'infobulle apparaît d'un coup, bien opaque (plus de fondu
+   transparent). Vaut pour tous les petits calques de Discord (infobulles, menus, cartes).
+   Pour désactiver : supprime tout ce bloc.
+*/
+html body [class*="layerContainer"] > *,
+html body [class*="layerContainer"] > * > *,
+html body [class*="layerContainer"] > * > * > *,
+html body [class*="layerContainer"] > * > * > * > * {
+    animation: none !important;
+    transition: none !important;
+    will-change: auto !important;
+}
+
+html body [class*="layerContainer"] > :not([class*="backdrop"]),
+html body [class*="layerContainer"] > * > :not([class*="backdrop"]),
+html body [class*="layerContainer"] > * > * > :not([class*="backdrop"]),
+html body [class*="layerContainer"] > * > * > * > :not([class*="backdrop"]) {
+    opacity: 1 !important;
+}
+/* ================= FIN INFOBULLE SERVEUR ================= */
+
+
+/* ================= MENTIONS (@) : EN BLANC, SANS VERT =================
+   Les @pseudo et @rôle dans les messages : texte blanc, fond gris clair discret (réglage --mention-bg
+   en haut du fichier ; "transparent" pour ne plus avoir de fond). Le vert venait du fond et de la
+   couleur d'accent du thème.
+   Pour désactiver : supprime tout ce bloc.
+*/
+html body #app-mount :is(span, a, div)[class]:is([class~="mention"], [class*="mention_"], [class*="roleMention"], [class*="userMention"]) {
+    --mention-foreground: #ffffff;
+    --mention-foreground-hover: #ffffff;
+    --mention-background: var(--mention-bg);
+    --mention-background-hover: rgba(255, 255, 255, 0.24);
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    background-color: var(--mention-bg) !important;
+    background-image: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+html body #app-mount :is(span, a, div)[class]:is([class~="mention"], [class*="mention_"], [class*="roleMention"], [class*="userMention"]):hover {
+    background-color: rgba(255, 255, 255, 0.24) !important;
+}
+
+html body #app-mount :is([class~="mention"], [class*="mention_"], [class*="roleMention"], [class*="userMention"]) * {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+/* ================= FIN MENTIONS ================= */
+
+
+/* ================= CONVERSATION PRIVÉE : PANNEAU DU PROFIL OPAQUE =================
+   Le panneau du profil à droite (user-profile-sidebar) : fond plein. Si la personne a un thème de profil,
+   on reprend ses couleurs en dégradé, sinon gris foncé. Les cartes de profil en pop-up ne sont pas touchées.
+   Pour désactiver : supprime tout ce bloc.
+*/
+html body #app-mount [class~="user-profile-sidebar"],
+html body #app-mount [class~="user-profile-sidebar"] > [class*="inner_"] {
+    background-color: var(--popup-bg) !important;
+    background-image: linear-gradient(180deg,
+        var(--profile-gradient-primary-color, var(--popup-bg)),
+        var(--profile-gradient-secondary-color, var(--popup-bg))) !important;
+    opacity: 1 !important;
+    backdrop-filter: none !important;
+}
+/* ================= FIN PANNEAU DU PROFIL ================= */
+
+/* ================= BARRE VERTE DES MESSAGES QUI TE MENTIONNENT : EN BLANC =================
+   La barre verticale à gauche d'un message où on te mentionne / te répond.
+   Pour une autre couleur : change #ffffff.
+   Pour désactiver : supprime tout ce bloc.
+*/
+html body #app-mount :is([class*="mentioned_"], [class*="replying_"], [class*="highlighted_"])::before {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    opacity: 1 !important;
+}
+/* ================= FIN BARRE DES MENTIONS ================= */
+
+
+/* ================= ZONE DU BAS À GAUCHE : TRAITS ET TROUS REMPLIS EN NOIR =================
+   Les fines lignes grises entre "Screen 1", "Voice Connected", les boutons, ton profil et le lecteur
+   passent en noir (même couleur que --panel-bg), donc plus de trous.
+   Pour désactiver : supprime tout ce bloc.
+*/
+html body #app-mount [class*="panels_"] > *,
+html body #app-mount [class*="panels_"] > * > *,
+html body #app-mount [class*="panels_"] > * > * > *,
+html body #app-mount [class*="panels_"] > * > * > * > * {
+    border-color: var(--panel-bg) !important;
+}
+
+html body #app-mount [class*="panels_"] > *,
+html body #app-mount [class*="panels_"] > * > *,
+html body #app-mount [class*="panels_"] > * > * > * {
+    box-shadow: none;
+}
+
+html body #app-mount [class*="panels_"] :is(hr, [class*="divider"], [class*="separator"]) {
+    background-color: var(--panel-bg) !important;
+    border-color: var(--panel-bg) !important;
+}
+
+html body #app-mount [class*="panels_"] *::before,
+html body #app-mount [class*="panels_"] *::after {
+    border-color: var(--panel-bg) !important;
+}
+/* ================= FIN ZONE DU BAS (TRAITS) ================= */
+
+
+/* ================= FOND D'ÉCRAN =================
+   Pour le changer facilement : ouvre "changer_fond.html" (dans le même dossier que ce fichier),
+   choisis ton image et ton fichier .css, puis enregistre le fichier qu'il te donne.
+   À la main : remplace tout ce qu'il y a entre url( ) par un lien, par exemple
+   url("https://exemple.com/mon-image.jpg"), ou par une image encodée en base64.
+   Ne touche pas aux deux lignes WALLPAPER-START et WALLPAPER-END.
+*/
+/* WALLPAPER-START */
+:root { --wallpaper: url("https://i.imgur.com/HPNd33X.png"); }
+/* WALLPAPER-END */
+
+
+/* ================= ICÔNES DE SERVEUR : PLUS DE TRANSPARENCE AU SURVOL =================
+   Les icônes de la liste des serveurs restent 100% opaques (survol, sélection, dossier).
+   Pour désactiver : supprime tout ce bloc.
+*/
+html body #app-mount nav[class*="guilds_"] :is(
+    [class*="listItem_"],
+    [class*="listItemWrapper_"],
+    [class*="wrapper_"],
+    [class*="blobContainer_"],
+    [class*="icon_"],
+    [class*="folderIcon"],
+    [class*="expandedFolder"],
+    [class*="avatar_"],
+    [class*="svg_"],
+    img,
+    svg,
+    foreignObject,
+    mask
+),
+html body #app-mount nav[class*="guilds_"] :is(
+    [class*="listItem_"],
+    [class*="wrapper_"],
+    [class*="blobContainer_"],
+    [class*="icon_"]
+):is(:hover, :active, :focus-within) {
+    opacity: 1 !important;
+    filter: none !important;
+    mix-blend-mode: normal !important;
+    transition-property: border-radius, transform !important;
+}
+/* ================= FIN ICÔNES DE SERVEUR ================= */
+
+/* ================= SURVOL SERVEUR / SALON : PLUS DE VERRE (override final) ================= */
+html body #app-mount nav[class*="guilds_"] {
+    --background-modifier-hover: rgb(36, 36, 36) !important;
+    --background-modifier-selected: rgb(48, 48, 48) !important;
+}
+
+html body #app-mount nav[class*="guilds_"] [class*="wrapper_"]:is(:hover, [class*="selected"]) {
+    background-color: transparent !important;
+    opacity: 1 !important;
+    filter: none !important;
+}
+
+html body [class*="layerContainer"] [id^="popout_"]:not(:has([role="menu"])):not(:has([class*="userPopout"])):not(:has([class*="userProfile"])) {
+    background: var(--hover-card-bg) !important;
+    background-color: var(--hover-card-bg) !important;
+    --background-primary: var(--hover-card-bg) !important;
+    --background-secondary: var(--hover-card-bg) !important;
+    --popout-color: var(--hover-card-bg) !important;
+    --tooltip-color: var(--hover-card-bg) !important;
+}
+
+html body [class*="layerContainer"] [id^="popout_"]:not(:has([role="menu"])):not(:has([class*="userPopout"])) *:not(img):not(svg):not(canvas):not(foreignObject) {
+    --background-primary: var(--hover-card-bg) !important;
+    --background-secondary: var(--hover-card-bg) !important;
+}
+/* ================= FIN SURVOL VERRE ================= */
