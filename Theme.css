@@ -1,8 +1,8 @@
 /**
- * @name Janis
+ * @name Transparent Discord Theme
  * @author uxa
- * @version 2.1.1-opti (v51)
- * @description Thème Vencord avec panneaux transparents et fond d'écran intégré
+ * @version 1.0
+ * @description Customizable transparent theme
  */
 
 
@@ -108,6 +108,8 @@
    --sidebar-text-unread : couleur du nom d'un salon qui a un nouveau message (gris pour le repérer ; #5e5e5e = gris foncé, #4a4a4a = encore plus sombre, #7a7a7a = plus clair)
    --mention-bg      : fond des @mentions (rgba(255,255,255,0.14) = gris clair discret ; transparent = aucun fond)
    --member-banner-filter : éclat des bannières des membres (brightness(1.5) = plus vif, none = aucun)
+   --profile-modal-tint : voile des cartes d'activité dans la fenêtre de profil (clic droit > Profil). Tout le reste de la fenêtre y est transparent.
+                      transparent = aucune carte visible / rgba(0,0,0,0.25) = léger / rgba(0,0,0,0.5) = plus sombre
 */
 html {
     --main-tint: 0;
@@ -122,6 +124,7 @@ html {
     --sidebar-text-unread: #5e5e5e;
     --mention-bg: rgba(255, 255, 255, 0.14);
     --member-banner-filter: brightness(1.3) saturate(1.3);
+    --profile-modal-tint: rgba(0, 0, 0, 0.25);
 }
 
 /* ================= VENCORD WALLPAPER + TRANSPARENCY =================
@@ -198,7 +201,6 @@ body::before {
 [class*="panels_"],
 [class*="title_"],
 [class*="header_"],
-[class*="channelTextArea_"],
 [class*="form_"],
 [class*="searchBar_"] {
     background-color: rgba(0, 0, 0, var(--main-tint)) !important;
@@ -331,8 +333,8 @@ html body [class*="highlighted"] {
 /* ================= FIN MESSAGES ================= */
 
 
-/* ================= MENU PARAMÈTRES : FOND NOIR (SANS FLOU) =================
-   Fond noir opaque, aucun flou (backdrop-filter désactivé pour les performances).
+/* ================= MENU PARAMÈTRES : SANS FLOU ET SANS ANIMATION =================
+   Aucun flou (backdrop-filter désactivé pour les performances). Le fond noir de la fenêtre : voir v59.
 */
 
 /* Calques parents : on retire ce qui bloque le flou, et l'animation d'ouverture
@@ -346,9 +348,8 @@ html body [class*="layerContainer"] > [class*="layer_"] [class*="outerContainer_
     transition: none !important;
 }
 
-/* La fenêtre des paramètres : fond noir opaque */
+/* La fenêtre des paramètres : pas de flou ni d'animation (son fond est défini dans le bloc v59 plus bas) */
 html body [class*="layerContainer"] [class*="outerContainer_"] > [class*="modal_"] {
-    background-color: rgb(0, 0, 0) !important;
     backdrop-filter: none !important;
     animation: none !important;
     transition: none !important;
@@ -611,6 +612,10 @@ html body [class*="layerContainer"] :is([class*="userPopoutOuter"], [class*="use
 
 
 /* ================= POP-UP AU SURVOL D'UN SERVEUR : NOIR TOTAL =================
+   [v70] Toute FENETRE MODALE (aria-modal="true" : profil complet par clic droit, etc.) est exclue du
+   bloc. Elle contient des data-list-item-id (onglets) sans outerContainer_, donc elle etait prise pour
+   une carte de serveur et tout son calque (ecran compris) etait peint en noir total.
+
    Infobulle simple OU carte preview (Events / salons / Server Boosts).
    La preview n'est PAS dans disabledPointerEvents et n'a PAS de listItem_
    (listItem_ = barre des icônes). On cible popout_ + data-list-item-id.
@@ -619,8 +624,8 @@ html body [class*="layerContainer"] :is([class*="userPopoutOuter"], [class*="use
 html body [class*="layerContainer"] :is(
     [class*="disabledPointerEvents"],
     [id^="popout_"],
-    [class*="layer_"]:has([data-list-item-id]),
-    [class*="layer_"]:has([role="tooltip"]),
+    [class*="layer_"]:has([data-list-item-id]):not(:has([class*="outerContainer_"], [aria-modal="true"], [role="menu"], [class~="user-profile-modal"], [class*="userProfileModal"])),
+    [class*="layer_"]:has([role="tooltip"]):not(:has([aria-modal="true"])),
     [class*="tooltip"]:not([class*="Pointer"])
 ) {
     --background-floating: var(--hover-card-bg) !important;
@@ -651,7 +656,7 @@ html body [class*="layerContainer"] :is(
 
 html body [class*="layerContainer"] :is(
     [id^="popout_"],
-    [class*="layer_"]:has([data-list-item-id]),
+    [class*="layer_"]:has([data-list-item-id]):not(:has([class*="outerContainer_"], [aria-modal="true"], [role="menu"], [class~="user-profile-modal"], [class*="userProfileModal"])),
     [class*="tooltip"]:not([class*="Pointer"]),
     [role="tooltip"]
 ),
@@ -755,19 +760,6 @@ html body #app-mount [class*="sidebar_"] [class*="sidebarList"] [class*="scrolle
     -webkit-text-fill-color: var(--sidebar-text) !important;
 }
 /* ================= FIN SURVOL / SÉLECTION ================= */
-
-
-/* ================= BARRES DE SÉPARATION : SUPPRIMÉES =================
-   Les deux traits verticaux entre la colonne des salons, le chat et la liste des membres.
-   (La couleur de bordure des cartes est aussi mise à "transparent" tout en haut du fichier.)
-   Pour les remettre : supprime ce bloc et remets --app-card-border-color à hsla(0,0%,70%,0.18).
-*/
-html body #app-mount :is([class*="page_"], [class*="sidebar_"], [class*="chat_"], [class*="membersWrap_"]) {
-    border-left: 0 !important;
-    border-right: 0 !important;
-    box-shadow: none !important;
-}
-/* ================= FIN BARRES ================= */
 
 
 /* ================= BARRE VERTICALE : BORDURES DU CADRE =================
@@ -902,9 +894,11 @@ html body #app-mount :is([class*="callContainer_"], [class*="panels_"])
    Un salon est repéré comme "non lu" de 3 façons (au cas où Discord change ses noms de classes).
    Pour désactiver : supprime tout ce bloc.
 */
+/* v68 : 3e selecteur retire (trop lourd : "[class*=\"unread_\"] ~ *" teste les freres de chaque ancetre de
+   chaque nom, dans le chat aussi). Si les salons non lus ne passent plus en gris, remets-le :
+   html body #app-mount [class*="sidebar_"] [class*="sidebarList"] [class*="scroller_"] [class*="unread_"] ~ * :is([class*="name"], [class*="channelName"], [class*="mainContent"])  (a ajouter dans la liste ci-dessous) */
 html body #app-mount [class*="sidebar_"] [class*="sidebarList"] [class*="scroller_"] [class*="modeUnread"] :is([class*="name"], [class*="channelName"], [class*="mainContent"]),
-html body #app-mount [class*="sidebar_"] [class*="sidebarList"] [class*="scroller_"] :is([class*="name"], [class*="channelName"], [class*="mainContent"])[class*="modeUnread"],
-html body #app-mount [class*="sidebar_"] [class*="sidebarList"] [class*="scroller_"] [class*="unread_"] ~ * :is([class*="name"], [class*="channelName"], [class*="mainContent"]) {
+html body #app-mount [class*="sidebar_"] [class*="sidebarList"] [class*="scroller_"] :is([class*="name"], [class*="channelName"], [class*="mainContent"])[class*="modeUnread"] {
     color: var(--sidebar-text-unread) !important;
     -webkit-text-fill-color: var(--sidebar-text-unread) !important;
 }
@@ -979,7 +973,11 @@ html body #app-mount :is(span, a, div)[class]:is([class~="mention"], [class*="me
     background-color: rgba(255, 255, 255, 0.24) !important;
 }
 
-html body #app-mount :is([class~="mention"], [class*="mention_"], [class*="roleMention"], [class*="userMention"]) * {
+/* v68 : avant, "... *" testait TOUS les elements de la page contre les ancetres (tres lourd au defilement).
+   Maintenant limite a 3 niveaux d'enfants du @mention : meme rendu. */
+html body #app-mount :is([class~="mention"], [class*="mention_"], [class*="roleMention"], [class*="userMention"]) > *,
+html body #app-mount :is([class~="mention"], [class*="mention_"], [class*="roleMention"], [class*="userMention"]) > * > *,
+html body #app-mount :is([class~="mention"], [class*="mention_"], [class*="roleMention"], [class*="userMention"]) > * > * > * {
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
 }
@@ -1101,7 +1099,7 @@ html body #app-mount nav[class*="guilds_"] [class*="wrapper_"]:is(:hover, [class
     filter: none !important;
 }
 
-html body [class*="layerContainer"] [id^="popout_"]:not(:has([role="menu"])):not(:has([class*="userPopout"])):not(:has([class*="userProfile"])) {
+html body [class*="layerContainer"] [id^="popout_"]:not(:has([role="menu"])) {
     background: var(--hover-card-bg) !important;
     background-color: var(--hover-card-bg) !important;
     --background-primary: var(--hover-card-bg) !important;
@@ -1112,3 +1110,481 @@ html body [class*="layerContainer"] [id^="popout_"]:not(:has([role="menu"])):not
 
 /* OPTI v51: règle sur tous les descendants des popouts supprimée (les variables CSS s'héritent déjà depuis le conteneur). */
 /* ================= FIN SURVOL VERRE ================= */
+
+
+/* ================= v52 : TOUS LES TRAITS DE SÉPARATION SUPPRIMÉS =================
+   Enlève les lignes horizontales (sous le nom du serveur, sous la barre du chat,
+   au-dessus de la liste des salons, sous la barre du haut à droite) et les lignes
+   verticales entre serveurs / salons / chat / membres.
+   Limité à #app-mount : les menus et pop-ups gardent leurs bordures.
+   Pour remettre les traits : supprime tout ce bloc et remets --app-card-border-color à hsla(0,0%,70%,0.18) (haut du fichier).
+*/
+
+/* 1) Couleurs de bordure de Discord mises à transparent dans les colonnes principales */
+html body #app-mount :is(
+    [class*="sidebar_"],
+    [class*="chat_"],
+    [class*="chatContent_"],
+    [class*="membersWrap_"],
+    [class*="members_"],
+    [class*="title_"],
+    [class*="header_"],
+    [class*="page_"]
+) {
+    --border-subtle: transparent !important;
+    --border-normal: transparent !important;
+    --border-strong: transparent !important;
+    --border-muted: transparent !important;
+    --border-faint: transparent !important;
+    --chat-border: transparent !important;
+    --app-frame-border: transparent !important;
+    --app-border-frame: transparent !important;
+    --divider: transparent !important;
+}
+
+/* 2) Barres du haut (nom du serveur, titre du salon, recherche) : plus de trait dessous */
+html body #app-mount :is([class*="title_"], [class*="header_"], [class*="sidebar_"] > nav > div:first-child) {
+    border-top: 0 !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+}
+
+/* 3) Traits verticaux entre les colonnes */
+html body #app-mount :is(
+    [class*="guilds_"],
+    [class*="page_"],
+    [class*="sidebar_"],
+    [class*="chat_"],
+    [class*="chatContent_"],
+    [class*="content_"],
+    [class*="members_"],
+    [class*="membersWrap_"]
+) {
+    border-left: 0 !important;
+    border-right: 0 !important;
+    box-shadow: none !important;
+}
+
+/* 4) Séparateurs dans la liste des salons (ex : au-dessus de "all") */
+html body #app-mount [class*="sidebar_"] :is(hr, [class*="divider"], [class*="separator"]) {
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* 5) Traits dessinés par des pseudo-éléments sur les barres du haut */
+html body #app-mount :is([class*="title_"], [class*="header_"])::before,
+html body #app-mount :is([class*="title_"], [class*="header_"])::after {
+    border: 0 !important;
+    box-shadow: none !important;
+}
+/* ================= FIN TRAITS ================= */
+
+
+/* ================= v53 : TRAITS RESTANTS (barre de fenêtre + icônes du chat) =================
+   - le trait sous la barre tout en haut de la fenêtre
+   - le séparateur vertical avant les boutons réduire / agrandir / fermer
+   - la barre verticale à gauche des icônes (threads, notifications, épingles, membres)
+   Pour remettre : supprime tout ce bloc.
+*/
+
+/* Barre de fenêtre du haut : plus de trait dessous */
+html body :is(
+    [class*="titleBar"],
+    [class*="typeWindows"],
+    [class*="typeMacOS"],
+    [class*="winButtons"],
+    [class*="base_"] > [class*="bar_"]
+) {
+    border: 0 !important;
+    box-shadow: none !important;
+    --border-subtle: transparent !important;
+    --border-normal: transparent !important;
+    --border-strong: transparent !important;
+    --border-muted: transparent !important;
+    --border-faint: transparent !important;
+}
+html body :is(
+    [class*="titleBar"],
+    [class*="typeWindows"],
+    [class*="typeMacOS"],
+    [class*="base_"] > [class*="bar_"]
+)::before,
+html body :is(
+    [class*="titleBar"],
+    [class*="typeWindows"],
+    [class*="typeMacOS"],
+    [class*="base_"] > [class*="bar_"]
+)::after {
+    border: 0 !important;
+    box-shadow: none !important;
+    background: none !important;
+}
+
+/* Séparateurs verticaux : barre de fenêtre + barre d'icônes du chat */
+html body :is(
+    [class*="titleBar"],
+    [class*="typeWindows"],
+    [class*="base_"] > [class*="bar_"],
+    [class*="toolbar_"],
+    [class*="title_"]
+) :is(hr, [class*="divider"], [class*="separator"]) {
+    display: none !important;
+    border: 0 !important;
+    background: transparent !important;
+    width: 0 !important;
+    margin: 0 !important;
+}
+/* ================= FIN TRAITS RESTANTS ================= */
+
+
+/* ================= v54 : BARRE VERTICALE À GAUCHE DES ICÔNES DU CHAT =================
+   Plusieurs cas possibles (élément vide, bordure, pseudo-élément) : tous sont couverts.
+   Pour remettre : supprime tout ce bloc.
+*/
+html body #app-mount :is([class*="toolbar_"], [class*="trailing_"], [class*="upperContainer_"]) > :is(div, span, hr):empty {
+    display: none !important;
+}
+html body #app-mount :is([class*="toolbar_"], [class*="trailing_"]) > * {
+    border-left: 0 !important;
+    border-right: 0 !important;
+    box-shadow: none !important;
+}
+html body #app-mount :is([class*="toolbar_"], [class*="trailing_"])::before,
+html body #app-mount :is([class*="toolbar_"], [class*="trailing_"])::after {
+    display: none !important;
+}
+html body #app-mount [class*="title_"] :is([class*="divider"], [class*="separator"], [class*="vertical"], [class*="bar_"]):not(svg):not(path) {
+    display: none !important;
+}
+/* ================= FIN BARRE ICÔNES ================= */
+
+
+/* ================= v55 : TRAIT EN HAUT DE LA ZONE D'APPEL VOCAL =================
+   Enlève la ligne sous la barre du haut quand tu es dans un salon vocal.
+   Couvre les bordures, ombres et pseudo-éléments de l'en-tête de l'appel et de ses parents.
+   Pour remettre : supprime tout ce bloc.
+*/
+html body #app-mount :is(
+    [class*="noChat_"],
+    [class*="callContainer_"],
+    [class*="page_"],
+    [class*="chat_"],
+    [class*="content_"],
+    [class*="base_"]
+) {
+    border-top: 0 !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+}
+html body #app-mount :is([class*="noChat_"], [class*="callContainer_"]) :is(
+    [class*="title_"],
+    [class*="header_"],
+    [class*="titleWrapper"],
+    [class*="callHeader"],
+    [class*="subtitleContainer"],
+    [class*="wrapper_"],
+    [class*="root_"]
+) {
+    border-top: 0 !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+    --border-subtle: transparent !important;
+    --border-normal: transparent !important;
+    --border-strong: transparent !important;
+    --border-muted: transparent !important;
+    --border-faint: transparent !important;
+}
+html body #app-mount :is(
+    [class*="noChat_"],
+    [class*="callContainer_"],
+    [class*="page_"],
+    [class*="chat_"],
+    [class*="base_"]
+)::before,
+html body #app-mount :is(
+    [class*="noChat_"],
+    [class*="callContainer_"],
+    [class*="page_"],
+    [class*="chat_"],
+    [class*="base_"]
+)::after {
+    border: 0 !important;
+    box-shadow: none !important;
+}
+/* ================= FIN TRAIT APPEL ================= */
+
+
+/* ================= v57 : VOILE NOIR AUTOUR DES PARAMÈTRES (scrim) SUPPRIMÉ =================
+   Discord met un voile noir ("scrim") derrière les fenêtres. La règle "INFOBULLE SERVEUR"
+   plus haut forçait son opacité à 1 (noir total). Ici on le rend transparent.
+   La fenêtre des paramètres elle-même reste noire (bloc "MENU PARAMÈTRES").
+   Remarque : ça enlève aussi l'assombrissement derrière les autres fenêtres Discord.
+   Pour remettre : supprime tout ce bloc.
+*/
+html body [class*="layerContainer"] > [class*="scrim_"] {
+    background: transparent !important;
+    background-color: transparent !important;
+    opacity: 0 !important;
+    backdrop-filter: none !important;
+}
+/* ================= FIN VOILE PARAMÈTRES ================= */
+
+
+/* ================= v59 : FOND DU MENU PARAMÈTRES TRANSPARENT, FENÊTRE EN NOIR =================
+   Le modal_ de Discord occupe TOUTE la fenêtre. Il était en noir (bloc "MENU PARAMÈTRES"),
+   d'où le noir partout autour de la fenêtre. On le passe en transparent, et on garde le
+   noir uniquement sur la fenêtre centrale (le rectangle avec les menus et les options).
+   Pour que la fenêtre aussi soit transparente : mets "transparent" à la place de rgb(0, 0, 0)
+   dans la 2e règle.
+   Pour remettre l'ancien comportement : supprime tout ce bloc.
+*/
+html body [class*="layerContainer"] [class*="outerContainer_"] > [class*="modal_"] {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+html body [class*="layerContainer"] [class*="outerContainer_"] > [class*="modal_"] [class*="modalContentInner"] > [class*="container_"] {
+    background-color: rgb(0, 0, 0) !important;
+}
+/* ================= FIN FOND PARAMÈTRES ================= */
+
+
+/* ================= v61 : CADRES NOIRS DE LA LISTE DES MEMBRES SUPPRIMÉS =================
+   Retire le fond sombre et les bordures du panneau des membres : la colonne elle-même,
+   les groupes (En ligne / Hors ligne) et les cartes d'activité (Counter-Strike, Roblox...).
+   Seule la couleur de fond est touchée (les images, icônes et pastilles restent).
+   Les bannières des membres (bloc "BANNIÈRES DES MEMBRES") ne sont PAS modifiées.
+   Pour remettre : supprime tout ce bloc.
+*/
+html body #app-mount [class*="membersWrap_"] :is(
+    [class*="members_"],
+    [class*="content_"],
+    [class*="scroller_"],
+    [class*="list_"],
+    [class*="membersGroup"],
+    [class*="card"],
+    [class*="Card"],
+    [class*="activity"],
+    [class*="Activity"],
+    [class*="panel"],
+    ul,
+    section,
+    [role="list"],
+    [role="listbox"]
+):not([class*="nameplated_"] *) {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+}
+/* ================= FIN CADRES MEMBRES ================= */
+
+
+/* ================= v62 : CONTENEUR DE LA LISTE DES MEMBRES : TOUT NETTOYÉ =================
+   Cible content_d125d2 (trouvé avec l'inspecteur) et ses parents : colonne, scroller, contenu.
+   Retire fond (couleur ET image/dégradé), ombre, bordure, contour, masque, filtre et
+   pseudo-éléments. Les membres, bannières et pastilles ne sont pas touchés.
+   Pour remettre : supprime tout ce bloc.
+*/
+html body #app-mount :is([class*="membersWrap_"], [class*="members_"]),
+html body #app-mount :is([class*="membersWrap_"], [class*="members_"]) :is([class*="scroller_"], [class*="content_"]) {
+    background: none !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    outline: 0 !important;
+    mask-image: none !important;
+    -webkit-mask-image: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+}
+html body #app-mount :is([class*="membersWrap_"], [class*="members_"])::before,
+html body #app-mount :is([class*="membersWrap_"], [class*="members_"])::after,
+html body #app-mount :is([class*="membersWrap_"], [class*="members_"]) :is([class*="scroller_"], [class*="content_"])::before,
+html body #app-mount :is([class*="membersWrap_"], [class*="members_"]) :is([class*="scroller_"], [class*="content_"])::after {
+    content: none !important;
+    background: none !important;
+    box-shadow: none !important;
+}
+/* ================= FIN NETTOYAGE MEMBRES ================= */
+
+
+/* ================= v63 : LISTE DES MEMBRES : NOIRS TRÈS TRANSPARENTS SUPPRIMÉS =================
+   Le thème définit des noirs à 8-22 % d'opacité (lignes "--background-base-*" et
+   "--background-surface-*" en haut du fichier). La liste des membres les utilisait pour son
+   fond. Ici on les passe à "transparent" uniquement dans la liste des membres.
+   Pour remettre : supprime tout ce bloc.
+*/
+html body #app-mount [class*="membersWrap_"] {
+    --background-primary: transparent !important;
+    --background-secondary: transparent !important;
+    --background-secondary-alt: transparent !important;
+    --background-tertiary: transparent !important;
+    --background-base-lowest: transparent !important;
+    --background-base-lower: transparent !important;
+    --background-base-low: transparent !important;
+    --background-base-primary: transparent !important;
+    --background-base-secondary: transparent !important;
+    --background-base-tertiary: transparent !important;
+    --background-surface-high: transparent !important;
+    --background-surface-higher: transparent !important;
+    --background-surface-highest: transparent !important;
+    --bg-overlay-1: transparent !important;
+    --bg-overlay-2: transparent !important;
+    --bg-overlay-3: transparent !important;
+    --background-tinted-dark: transparent !important;
+    --card-color: transparent !important;
+    --app-background: transparent !important;
+    --app-foreground: transparent !important;
+}
+/* ================= FIN NOIRS MEMBRES ================= */
+
+/* ================= v68 : PROFILS : PLUS DE NOIR TOTAL, THEME DU PROFIL RESPECTE (sans :has => aucun cout) =================
+   Le bloc "POP-UP AU SURVOL D'UN SERVEUR" peint en noir total (--hover-card-bg) tout ce qui est dans
+   un popout_, profils compris (bande sous la banniere, cercle de l'avatar, boutons du haut,
+   cartes d'activite, champ Message). Ici on redefinit simplement ces variables sur la carte de
+   profil : les regles du bloc du dessus lisent la nouvelle valeur par heritage. Aucune regle
+   supplementaire par element, aucun :has, aucun :hover.
+   Reglages : --popup-bg (fond) et --popup-bg-inner (cartes) en haut du fichier.
+   Pour desactiver : supprime tout ce bloc.
+*/
+html body [class*="layerContainer"] :is(
+    [class~="user-profile-popout"],
+    [class~="user-profile-modal"]
+) {
+    --hover-card-bg: transparent !important;
+    --profile-body-background-color: var(--popup-bg) !important;
+    --profile-body-background-hover: var(--popup-bg-inner) !important;
+    --background-floating: var(--popup-bg) !important;
+    --background-primary: var(--popup-bg) !important;
+    --background-secondary: var(--popup-bg) !important;
+    --background-secondary-alt: var(--popup-bg) !important;
+    --background-tertiary: var(--popup-bg) !important;
+    --background-base-lowest: var(--popup-bg) !important;
+    --background-base-lower: var(--popup-bg) !important;
+    --background-base-low: var(--popup-bg) !important;
+    --background-base-primary: var(--popup-bg) !important;
+    --background-base-secondary: var(--popup-bg) !important;
+    --background-base-tertiary: var(--popup-bg) !important;
+    --background-surface-high: var(--popup-bg) !important;
+    --background-surface-higher: var(--popup-bg) !important;
+    --background-surface-highest: var(--popup-bg) !important;
+    --bg-overlay-1: var(--popup-bg) !important;
+    --bg-overlay-2: var(--popup-bg) !important;
+    --bg-overlay-3: var(--popup-bg) !important;
+    --popout-color: var(--popup-bg) !important;
+    --popout-color-alt: var(--popup-bg) !important;
+    --card-color: var(--popup-bg-inner) !important;
+    --tooltip-color: var(--popup-bg) !important;
+}
+
+/* Fond de secours sous la carte (visible seulement si le profil n'a pas de theme) */
+html body [class*="layerContainer"] :is([class~="user-profile-popout"], [class~="user-profile-modal"]) {
+    --profile-card-tint: rgba(0, 0, 0, 0.25);
+    background-color: var(--popup-bg) !important;
+}
+
+/* Cartes d'activite (Game Collection, Streaming...) et champ "Message @pseudo" :
+   voile noir translucide, donc lisible sur n'importe quel theme (rouge, bleu, sans theme).
+   Reglage : --profile-card-tint juste au-dessus (0.25 = leger, 0.5 = plus sombre). */
+html body [class*="layerContainer"] :is([class~="user-profile-popout"], [class~="user-profile-modal"])
+    :is([class*="card"], [class*="channelTextArea_"], [class*="scrollableContainer_"]) {
+    background-color: var(--profile-card-tint) !important;
+}
+/* ================= FIN PROFILS ================= */
+
+/* ================= v71 : MENUS (clic droit, bouton "...") : PLUS DE NOIR TOTAL =================
+   Le menu etait peint par le bloc "noir total" (barres noires derriere les textes, fond noir).
+   On remet a zero, sur le menu lui-meme, les variables qui servent a ce noir : les elements
+   internes les lisent par heritage. Aucun selecteur de plus a evaluer, aucun :hover.
+   Pour desactiver : supprime tout ce bloc.
+*/
+html body [role="menu"] {
+    --main-tint: 0 !important;
+    --hover-card-bg: transparent !important;
+    --background-base-lowest: transparent !important;
+    --background-base-lower: transparent !important;
+    --background-base-low: transparent !important;
+    --background-base-primary: transparent !important;
+    --background-base-secondary: transparent !important;
+    --background-base-tertiary: transparent !important;
+    --background-tertiary: transparent !important;
+    --background-surface-high: transparent !important;
+    --background-surface-higher: transparent !important;
+    --background-surface-highest: transparent !important;
+    --bg-overlay-1: transparent !important;
+    --bg-overlay-2: transparent !important;
+    --bg-overlay-3: transparent !important;
+    --popout-color: transparent !important;
+    --popout-color-alt: transparent !important;
+    --card-color: transparent !important;
+}
+/* ================= FIN MENUS ================= */
+
+
+/* ================= v72 : FENETRE DE PROFIL (clic droit > Profil) : TOUT LE FOND NOIR TRANSPARENT =================
+   Remplace les deux blocs v71 "FENETRE DE PROFIL" et "SECOURS".
+   Structure (DevTools) : dialog[aria-modal] > root_ > div > layoutContainer_ > [1] calque .theme-midnight + [2] .user-profile-modal-v2
+   Cause probable du noir restant : le theme Discord "midnight" redeclare ses variables de fond (noir) directement sur ces
+   elements, ce qui ecrasait les variables posees plus haut (layerContainer). On les redefinit donc ICI, sur l'element
+   lui-meme, en !important : le cadre, le panneau gauche, les onglets Activity / Mutual Friends / Mutual Servers et les
+   sections "Current activity" / "Recent activity" les lisent par heritage (pas de selecteur par element).
+   Transparent : cadre, panneaux, sections. Voile leger (--profile-modal-tint) : cartes d'activite uniquement.
+   La banniere, la photo de profil, les boutons et les images ne sont pas touches.
+   Les pop-ups de profil (petite carte) gardent leur fond opaque.
+   Si une zone reste noire : clic droit dessus > Inspecter, note sa classe et ajoute-la au 3e bloc.
+   Pour desactiver : supprime tout ce bloc.
+*/
+html body [class*="layerContainer"] [aria-modal="true"] [class*="layoutContainer_"],
+html body [class*="layerContainer"] [aria-modal="true"] [class*="layoutContainer_"] > .theme-midnight,
+html body [class*="layerContainer"] [aria-modal="true"] .user-profile-modal-v2 {
+    --profile-gradient-modal-background-color: transparent !important;
+    --profile-body-background-color: transparent !important;
+    --background-floating: transparent !important;
+    --background-primary: transparent !important;
+    --background-secondary: transparent !important;
+    --background-secondary-alt: transparent !important;
+    --background-tertiary: transparent !important;
+    --background-base-lowest: transparent !important;
+    --background-base-lower: transparent !important;
+    --background-base-low: transparent !important;
+    --background-base-primary: transparent !important;
+    --background-base-secondary: transparent !important;
+    --background-base-tertiary: transparent !important;
+    --bg-overlay-1: transparent !important;
+    --bg-overlay-2: transparent !important;
+    --bg-overlay-3: transparent !important;
+    --popout-color: transparent !important;
+    --popout-color-alt: transparent !important;
+    /* cartes d'activité : voile léger */
+    --profile-body-background-hover: var(--profile-modal-tint) !important;
+    --card-color: var(--profile-modal-tint) !important;
+    --background-surface-high: var(--profile-modal-tint) !important;
+    --background-surface-higher: var(--profile-modal-tint) !important;
+    --background-surface-highest: var(--profile-modal-tint) !important;
+    background-color: transparent !important;
+}
+
+/* Calques parents de la fenêtre (seul :has du bloc ; il ne s'évalue que sur les rares éléments aria-modal) */
+html body [class*="layerContainer"] [aria-modal="true"]:has(.user-profile-modal-v2),
+html body [class*="layerContainer"] [aria-modal="true"]:has(.user-profile-modal-v2) > [class*="root_"],
+html body [class*="layerContainer"] [aria-modal="true"]:has(.user-profile-modal-v2) > [class*="root_"] > div {
+    background-color: transparent !important;
+}
+
+/* Blocs internes : les règles "INFOBULLES / PROFILS" et "v68" plus haut les peignaient en opaque */
+html body [class*="layerContainer"] [aria-modal="true"] .user-profile-modal-v2 :is(
+    [class*="body_"],
+    [class*="overlay"],
+    [class*="section_"],
+    [class*="note_"],
+    [class*="inner_"]
+) {
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+}
+html body [class*="layerContainer"] [aria-modal="true"] .user-profile-modal-v2 :is([class*="card"], [class*="Card"]) {
+    background-color: var(--profile-modal-tint) !important;
+}
+/* ================= FIN FENETRE DE PROFIL ================= */
